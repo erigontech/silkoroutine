@@ -30,6 +30,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   add_compile_options(-stdlib=libc++)
 endif()
 
+# KV interface tools
+
 add_executable(kv_seek_async_asio kv_seek_async_asio.cpp)
 target_include_directories(kv_seek_async_asio PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(kv_seek_async_asio absl::flags_parse gRPC::grpc++_unsecure protobuf::libprotobuf silkoroutine)
@@ -49,6 +51,12 @@ target_link_libraries(kv_seek_async absl::flags_parse gRPC::grpc++_unsecure prot
 add_executable(kv_seek kv_seek.cpp)
 target_include_directories(kv_seek PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(kv_seek absl::flags_parse gRPC::grpc++_unsecure protobuf::libprotobuf silkoroutine)
+
+# SENTRY interface tools
+
+add_executable(sentry_set_status sentry_set_status.cpp)
+target_include_directories(sentry_set_status PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(sentry_set_status absl::flags_parse gRPC::grpc++_unsecure protobuf::libprotobuf silkoroutine)
 
 # Unit tests
 enable_testing()
