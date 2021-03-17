@@ -38,10 +38,9 @@ ABSL_FLAG(std::string, seekkey, "", "seek key as hex string w/o leading 0x");
 ABSL_FLAG(std::string, target, silkoroutine::kDefaultTarget, "server location as string <address>:<port>");
 ABSL_FLAG(uint32_t, timeout, silkoroutine::kDefaultTimeout.count(), "gRPC call timeout as 32-bit integer");
 
-using namespace silkoroutine;
-using namespace silkoroutine::ethdb::kv;
+asio::awaitable<void> kv_seek(silkoroutine::ethdb::kv::Database& kv_db, const std::string& table_name, const silkoroutine::Bytes& seek_key) {
+    using namespace silkoroutine; // NOLINT(build/namespaces) [just for operator<<]
 
-asio::awaitable<void> kv_seek(Database& kv_db, const std::string& table_name, const Bytes& seek_key) {
     const auto kv_transaction = kv_db.begin();
     std::cout << "KV Tx OPEN -> table_name: " << table_name << "\n" << std::flush;
     const auto kv_cursor = co_await kv_transaction->cursor(table_name);
@@ -60,9 +59,6 @@ int main(int argc, char* argv[]) {
     absl::SetProgramUsageMessage("Seek Turbo-Geth/Silkworm Key-Value (KV) remote interface to database");
     absl::ParseCommandLine(argc, argv);
 
-    using namespace std::chrono;
-    using namespace silkoroutine;
-
     auto table_name{absl::GetFlag(FLAGS_table)};
     if (table_name.empty()) {
         std::cerr << "Parameter table is invalid: [" << table_name << "]\n";
@@ -71,8 +67,8 @@ int main(int argc, char* argv[]) {
     }
 
     auto seek_key{absl::GetFlag(FLAGS_seekkey)};
-    const auto seek_key_bytes_optional = from_hex(seek_key);
-    if (seek_key.empty() || !seek_key_bytes_optional.has_value()) {
+    const auto seek_key_bytes_optional = silkoroutine::from_hex(seek_key);
+    if (seek_key.empty() || !seek_key_bytes_optional) {
         std::cerr << "Parameter seek key is invalid: [" << seek_key << "]\n";
         std::cerr << "Use --seekkey flag to specify the seek key in Turbo-Geth database table\n";
         return -1;
@@ -98,7 +94,7 @@ int main(int argc, char* argv[]) {
 
     const auto channel = grpc::CreateChannel(target, grpc::InsecureChannelCredentials());
 
-    RemoteDatabase kv_database{context, channel};
+    silkoroutine::ethdb::kv::RemoteDatabase kv_database{context, channel};
 
     asio::co_spawn(context, kv_seek(kv_database, table_name, seek_key_bytes), [&](std::exception_ptr exptr) {
         context.stop();

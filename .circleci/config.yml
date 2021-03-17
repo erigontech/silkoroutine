@@ -33,7 +33,7 @@ commands:
             sudo pip3 install cpplint
       - run:
           name: "Lint"
-          command: cpplint silkoroutine/**/*.hpp silkoroutine/**/*.cpp
+          command: ./run_linter.sh
 
   build:
     steps:

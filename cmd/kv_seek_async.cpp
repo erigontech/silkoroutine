@@ -36,8 +36,7 @@ int main(int argc, char* argv[]) {
     absl::SetProgramUsageMessage("Seek Turbo-Geth/Silkworm Key-Value (KV) remote interface to database");
     absl::ParseCommandLine(argc, argv);
 
-    using namespace std::chrono;
-    using namespace silkoroutine;
+    using namespace silkoroutine; // NOLINT(build/namespaces) [just for operator<<]
 
     auto table_name{absl::GetFlag(FLAGS_table)};
     if (table_name.empty()) {
@@ -47,7 +46,7 @@ int main(int argc, char* argv[]) {
     }
 
     auto seek_key{absl::GetFlag(FLAGS_seekkey)};
-    const auto seek_key_bytes_optional = from_hex(seek_key);
+    const auto seek_key_bytes_optional = silkoroutine::from_hex(seek_key);
     if (seek_key.empty() || !seek_key_bytes_optional.has_value()) {
         std::cerr << "Parameter seek key is invalid: [" << seek_key << "]\n";
         std::cerr << "Use --seekkey flag to specify the seek key in Turbo-Geth database table\n";
@@ -83,16 +82,16 @@ int main(int argc, char* argv[]) {
     context.set_deadline(std::chrono::system_clock::system_clock::now() + std::chrono::milliseconds{timeout});
     const auto reader_writer = stub->PrepareAsyncTx(&context, &queue);
 
-    const uint START_TAG = 0;
-    const uint OPEN_TAG = 1;
-    const uint SEEK_TAG = 2;
-    const uint CLOSE_TAG = 3;
-    const uint FINISH_TAG = 4;
+    auto START_TAG = reinterpret_cast<void*>(0);
+    auto OPEN_TAG = reinterpret_cast<void*>(1);
+    auto SEEK_TAG = reinterpret_cast<void*>(2);
+    auto CLOSE_TAG = reinterpret_cast<void*>(3);
+    auto FINISH_TAG = reinterpret_cast<void*>(4);
 
     // 1) StartCall + Next
-    reader_writer->StartCall((void *)START_TAG);
+    reader_writer->StartCall(START_TAG);
     bool has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)START_TAG) {
+    if (!has_event || got_tag != START_TAG) {
         return -1;
     }
 
@@ -102,16 +101,16 @@ int main(int argc, char* argv[]) {
     auto open_message = remote::Cursor{};
     open_message.set_op(remote::Op::OPEN);
     open_message.set_bucketname(table_name);
-    reader_writer->Write(open_message, (void *)OPEN_TAG);
+    reader_writer->Write(open_message, OPEN_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)OPEN_TAG) {
+    if (!has_event || got_tag != OPEN_TAG) {
         return -1;
     }
     // 2.2) Read + Next
     auto open_pair = remote::Pair{};
-    reader_writer->Read(&open_pair, (void *)OPEN_TAG);
+    reader_writer->Read(&open_pair, OPEN_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)OPEN_TAG) {
+    if (!has_event || got_tag != OPEN_TAG) {
         return -1;
     }
     auto cursor_id = open_pair.cursorid();
@@ -124,20 +123,20 @@ int main(int argc, char* argv[]) {
     seek_message.set_op(remote::Op::SEEK);
     seek_message.set_cursor(cursor_id);
     seek_message.set_k(seek_key_bytes.c_str(), seek_key_bytes.length());
-    reader_writer->Write(seek_message, (void *)SEEK_TAG);
+    reader_writer->Write(seek_message, SEEK_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)SEEK_TAG) {
+    if (!has_event || got_tag != SEEK_TAG) {
         return -1;
     }
     // 3.2) Read + Next
     auto seek_pair = remote::Pair{};
-    reader_writer->Read(&seek_pair, (void *)SEEK_TAG);
+    reader_writer->Read(&seek_pair, SEEK_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)SEEK_TAG) {
+    if (!has_event || got_tag != SEEK_TAG) {
         return -1;
     }
-    const auto& key_bytes = byte_view_of_string(seek_pair.k());
-    const auto& value_bytes = byte_view_of_string(seek_pair.v());
+    const auto& key_bytes = silkoroutine::byte_view_of_string(seek_pair.k());
+    const auto& value_bytes = silkoroutine::byte_view_of_string(seek_pair.v());
     std::cout << "KV Tx SEEK <- key: " << key_bytes << " value: " << value_bytes << std::endl;
 
     // 4) Close cursor
@@ -146,22 +145,22 @@ int main(int argc, char* argv[]) {
     auto close_message = remote::Cursor{};
     close_message.set_op(remote::Op::CLOSE);
     close_message.set_cursor(cursor_id);
-    reader_writer->Write(close_message, (void *)CLOSE_TAG);
+    reader_writer->Write(close_message, CLOSE_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)CLOSE_TAG) {
+    if (!has_event || got_tag != CLOSE_TAG) {
         return -1;
     }
     // 4.2) Read + Next
     auto close_pair = remote::Pair{};
-    reader_writer->Read(&close_pair, (void *)CLOSE_TAG);
+    reader_writer->Read(&close_pair, CLOSE_TAG);
     has_event = queue.Next(&got_tag, &ok);
-    if (!has_event || got_tag != (void *)CLOSE_TAG) {
+    if (!has_event || got_tag != CLOSE_TAG) {
         return -1;
     }
     std::cout << "KV Tx CLOSE <- cursor: " << close_pair.cursorid() << "\n";
 
     // 5) Finish
-    reader_writer->Finish(&status, (void *)FINISH_TAG);
+    reader_writer->Finish(&status, FINISH_TAG);
     if (!status.ok()) {
         std::cout << "KV Tx Status <- error_code: " << status.error_code() << "\n";
         std::cout << "KV Tx Status <- error_message: " << status.error_message() << "\n";

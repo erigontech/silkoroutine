@@ -42,7 +42,7 @@ struct ChainConfig {
     // https://ecips.ethereumclassic.org/ECIPs/ecip-1015
     std::optional<uint64_t> tangerine_whistle_block;
 
-    // TODO[ETC] EIP-160 was applied to ETC before the rest of Spurious Dragon; see
+    // TODO(ETC) EIP-160 was applied to ETC before the rest of Spurious Dragon; see
     // https://ecips.ethereumclassic.org/ECIPs/ecip-1066
 
     // https://eips.ethereum.org/EIPS/eip-607
@@ -74,7 +74,7 @@ struct ChainConfig {
     // https://eips.ethereum.org/EIPS/eip-779
     std::optional<uint64_t> dao_block;
 
-    // TODO[ETC] ECIP-1017
+    // TODO(ETC) ECIP-1017
 
     bool has_homestead(uint64_t block_num) const noexcept {
         return homestead_block.has_value() && homestead_block <= block_num;
@@ -200,8 +200,6 @@ int main(int argc, char* argv[]) {
     absl::SetProgramUsageMessage("Set Status on P2PSentry using Sentry remote interface");
     absl::ParseCommandLine(argc, argv);
 
-    using namespace silkoroutine;
-
     auto chain_id{absl::GetFlag(FLAGS_chainid)};
     const auto chain_config = lookup_chain_config(chain_id);
     if (chain_config == nullptr) {
@@ -255,7 +253,7 @@ int main(int argc, char* argv[]) {
     request.set_best_hash(head_hash.data(), head_hash.size());
     auto forks = new sentry::Forks{};
     forks->set_genesis(chain_config->genesis_hash, std::strlen(chain_config->genesis_hash));
-    for(std::optional<uint64_t> block : hard_forks) {
+    for (std::optional<uint64_t> block : hard_forks) {
         forks->add_forks(block.value());
     }
     request.set_allocated_fork_data(forks); // take ownership
@@ -263,11 +261,12 @@ int main(int argc, char* argv[]) {
     // Send SetStatus message to Sentry
     google::protobuf::Empty response;
     std::cout << "SENTRY SetStatus -> chain_id: " << chain_id << " head_hash: " << head_hash << "\n";
-    grpc::Status invocation = stub->SetStatus(&context, request, &response);
-    std::cout << "SENTRY SetStatus <- ok: " << std::boolalpha << invocation.ok() << "\n";
-    if (!invocation.ok()) {
-        std::cout << "SENTRY SetStatus <- error_message: " << invocation.error_message() << "\n";
-        std::cout << "SENTRY SetStatus <- error_details: " << invocation.error_details() << "\n";
+    grpc::Status result = stub->SetStatus(&context, request, &response);
+    std::cout << "SENTRY SetStatus <- result ok: " << std::boolalpha << result.ok() << "\n";
+    if (!result.ok()) {
+        std::cout << "SENTRY SetStatus <- result error_code: " << result.error_code() << "\n";
+        std::cout << "SENTRY SetStatus <- result error_message: " << result.error_message() << "\n";
+        std::cout << "SENTRY SetStatus <- result error_details: " << result.error_details() << "\n";
         return 1;
     }
 
