@@ -27,7 +27,7 @@
 
 #include <silkoroutine/common/constants.hpp>
 #include <silkoroutine/common/util.hpp>
-#include <silkoroutine/ethdb/sentry/remote/sentry.grpc.pb.h>
+#include <silkoroutine/bindings/p2psentry/generated/sentry.grpc.pb.h>
 
 struct ChainConfig {
     const char* genesis_hash{nullptr};

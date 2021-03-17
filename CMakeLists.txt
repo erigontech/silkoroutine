@@ -39,6 +39,6 @@ include(cmake/Hunter/packages.cmake)
 
 # Silkoroutine itself
 add_subdirectory(silkoroutine/ethdb/kv/remote)
-add_subdirectory(silkoroutine/ethdb/sentry/remote)
+add_subdirectory(silkoroutine/bindings/p2psentry/generated)
 add_subdirectory(silkoroutine)
 add_subdirectory(cmd)
