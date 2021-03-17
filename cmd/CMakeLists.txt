@@ -58,6 +58,10 @@ add_executable(sentry_set_status sentry_set_status.cpp)
 target_include_directories(sentry_set_status PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(sentry_set_status absl::flags_parse gRPC::grpc++_unsecure protobuf::libprotobuf silkoroutine)
 
+add_executable(sentry_set_status_async sentry_set_status_async.cpp)
+target_include_directories(sentry_set_status_async PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(sentry_set_status_async absl::flags_parse gRPC::grpc++_unsecure protobuf::libprotobuf silkoroutine)
+
 # Unit tests
 enable_testing()
 
