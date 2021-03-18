@@ -35,7 +35,7 @@ namespace silkoroutine::ethdb::kv {
 
 class RemoteCursor : public Cursor {
 public:
-    RemoteCursor(bindings::kv::KvAsioAwaitable<asio::io_context::executor_type>& kv_awaitable)
+    RemoteCursor(bindings::kv::GrpcAsioAwaitable<asio::io_context::executor_type>& kv_awaitable)
     : kv_awaitable_(kv_awaitable), cursor_id_{0} {}
 
     RemoteCursor(const RemoteCursor&) = delete;
@@ -90,7 +90,7 @@ public:
     }
 
 private:
-    bindings::kv::KvAsioAwaitable<asio::io_context::executor_type>& kv_awaitable_;
+    bindings::kv::GrpcAsioAwaitable<asio::io_context::executor_type>& kv_awaitable_;
     uint32_t cursor_id_;
 };
 

@@ -26,7 +26,7 @@
 #include <asio/use_awaitable.hpp>
 
 #include <silkoroutine/bindings/kv/awaitables.hpp>
-#include <silkoroutine/bindings/kv/client_callback_reactor.hpp>
+#include <silkoroutine/bindings/kv/grpc_client_reactor.hpp>
 #include <silkoroutine/ethdb/kv/cursor.hpp>
 #include <silkoroutine/ethdb/kv/remote_cursor.hpp>
 #include <silkoroutine/ethdb/kv/transaction.hpp>
@@ -48,8 +48,8 @@ public:
 
 private:
     asio::io_context& context_;
-    bindings::kv::ClientCallbackReactor reactor_;
-    bindings::kv::KvAsioAwaitable<asio::io_context::executor_type> kv_awaitable_;
+    bindings::kv::GrpcClientReactor reactor_;
+    bindings::kv::GrpcAsioAwaitable<asio::io_context::executor_type> kv_awaitable_;
     std::map<std::string, std::shared_ptr<Cursor>> cursors_;
 };
 

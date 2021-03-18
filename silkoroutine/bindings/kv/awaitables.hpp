@@ -37,20 +37,20 @@
 #include <silkoroutine/bindings/kv/async_next.hpp>
 #include <silkoroutine/bindings/kv/async_open_cursor.hpp>
 #include <silkoroutine/bindings/kv/async_seek.hpp>
-#include <silkoroutine/bindings/kv/client_callback_reactor.hpp>
+#include <silkoroutine/bindings/kv/grpc_client_reactor.hpp>
 #include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 namespace silkoroutine::bindings::kv {
 
 template<typename Executor>
-struct KvAsioAwaitable;
+struct GrpcAsioAwaitable;
 
 template<typename Executor>
 class initiate_async_open_cursor {
 public:
     typedef Executor executor_type;
 
-    explicit initiate_async_open_cursor(KvAsioAwaitable<Executor>* self, const std::string& table_name)
+    explicit initiate_async_open_cursor(GrpcAsioAwaitable<Executor>* self, const std::string& table_name)
     : self_(self), table_name_(table_name) {}
 
     executor_type get_executor() const noexcept { return self_->get_executor(); }
@@ -89,7 +89,7 @@ public:
     }
 
 private:
-    KvAsioAwaitable<Executor>* self_;
+    GrpcAsioAwaitable<Executor>* self_;
     const std::string& table_name_;
     void* wrapper_;
 };
@@ -99,7 +99,7 @@ class initiate_async_seek {
 public:
     typedef Executor executor_type;
 
-    explicit initiate_async_seek(KvAsioAwaitable<Executor>* self, uint32_t cursor_id, const Bytes& seek_key_bytes)
+    explicit initiate_async_seek(GrpcAsioAwaitable<Executor>* self, uint32_t cursor_id, const Bytes& seek_key_bytes)
     : self_(self), cursor_id_(cursor_id), seek_key_bytes_(std::move(seek_key_bytes)) {}
 
     executor_type get_executor() const noexcept { return self_->get_executor(); }
@@ -137,7 +137,7 @@ public:
     }
 
 private:
-    KvAsioAwaitable<Executor>* self_;
+    GrpcAsioAwaitable<Executor>* self_;
     uint32_t cursor_id_;
     const Bytes seek_key_bytes_;
     void* wrapper_;
@@ -148,7 +148,7 @@ class initiate_async_next {
 public:
     typedef Executor executor_type;
 
-    explicit initiate_async_next(KvAsioAwaitable<Executor>* self, uint32_t cursor_id)
+    explicit initiate_async_next(GrpcAsioAwaitable<Executor>* self, uint32_t cursor_id)
     : self_(self), cursor_id_(cursor_id) {}
 
     executor_type get_executor() const noexcept { return self_->get_executor(); }
@@ -185,7 +185,7 @@ public:
     }
 
 private:
-    KvAsioAwaitable<Executor>* self_;
+    GrpcAsioAwaitable<Executor>* self_;
     uint32_t cursor_id_;
     const Bytes next_key_bytes_;
     void* wrapper_;
@@ -196,7 +196,7 @@ class initiate_async_close_cursor {
 public:
     typedef Executor executor_type;
 
-    explicit initiate_async_close_cursor(KvAsioAwaitable<Executor>* self, uint32_t cursor_id)
+    explicit initiate_async_close_cursor(GrpcAsioAwaitable<Executor>* self, uint32_t cursor_id)
     : self_(self), cursor_id_(cursor_id) {}
 
     executor_type get_executor() const noexcept { return self_->get_executor(); }
@@ -235,7 +235,7 @@ public:
     }
 
 private:
-    KvAsioAwaitable<Executor>* self_;
+    GrpcAsioAwaitable<Executor>* self_;
     uint32_t cursor_id_;
     void* wrapper_;
 };
@@ -245,7 +245,7 @@ class initiate_async_close {
 public:
     typedef Executor executor_type;
 
-    explicit initiate_async_close(KvAsioAwaitable<Executor>* self)
+    explicit initiate_async_close(GrpcAsioAwaitable<Executor>* self)
     : self_(self) {}
 
     executor_type get_executor() const noexcept { return self_->get_executor(); }
@@ -274,15 +274,15 @@ public:
     }
 
 private:
-    KvAsioAwaitable<Executor>* self_;
+    GrpcAsioAwaitable<Executor>* self_;
     void* wrapper_;
 };
 
 template<typename Executor>
-struct KvAsioAwaitable {
+struct GrpcAsioAwaitable {
     typedef Executor executor_type;
 
-    explicit KvAsioAwaitable(asio::io_context& context, ClientCallbackReactor& reactor)
+    explicit GrpcAsioAwaitable(asio::io_context& context, GrpcClientReactor& reactor)
     : context_(context), reactor_(reactor) {}
 
     template<typename WaitHandler>
@@ -311,7 +311,7 @@ struct KvAsioAwaitable {
     }
 
     asio::io_context& context_;
-    ClientCallbackReactor& reactor_;
+    GrpcClientReactor& reactor_;
 };
 
 } // namespace silkoroutine::bindings::kv
