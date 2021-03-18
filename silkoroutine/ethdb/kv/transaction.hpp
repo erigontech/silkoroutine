@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_TRANSACTION_H_
-#define SILKOROUTINE_KV_TRANSACTION_H_
+#ifndef SILKOROUTINE_ETHDB_KV_TRANSACTION_HPP_
+#define SILKOROUTINE_ETHDB_KV_TRANSACTION_HPP_
 
 #include <memory>
 #include <string>
@@ -47,4 +47,4 @@ public:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif  // SILKOROUTINE_KV_TRANSACTION_H_
+#endif  // SILKOROUTINE_ETHDB_KV_TRANSACTION_HPP_

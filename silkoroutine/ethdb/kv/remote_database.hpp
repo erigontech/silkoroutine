@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_REMOTE_RemoteDatabase_H_
-#define SILKOROUTINE_KV_REMOTE_RemoteDatabase_H_
+#ifndef SILKOROUTINE_ETHDB_KV_REMOTE_DATABASE_HPP_
+#define SILKOROUTINE_ETHDB_KV_REMOTE_DATABASE_HPP_
 
 #include <memory>
 
@@ -35,7 +35,7 @@ public:
     RemoteDatabase(const RemoteDatabase&) = delete;
     RemoteDatabase& operator=(const RemoteDatabase&) = delete;
 
-    virtual std::unique_ptr<Transaction> begin() override {
+    std::unique_ptr<Transaction> begin() override {
         return std::make_unique<RemoteTransaction>(context_, channel_);
     }
 
@@ -46,4 +46,4 @@ private:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif  // SILKOROUTINE_KV_REMOTE_RemoteDatabase_H_
+#endif  // SILKOROUTINE_ETHDB_KV_REMOTE_DATABASE_HPP_

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cpplint silkoroutine/**/*.hpp silkoroutine/**/*.cpp cmd/*.cpp
+cpplint cmd/*.cpp silkoroutine/*/*.hpp silkoroutine/*/*.cpp silkoroutine/*/*/*.hpp silkoroutine/*/*/*.cpp

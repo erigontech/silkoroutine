@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP
-#define SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP_
+#define SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP_
 
 #include <functional>
 #include <memory>
@@ -39,7 +39,7 @@ public:
         //context_.TryCancel();
     }
 
-    void read_start(std::function<void(bool,remote::Pair)> read_completed) {
+    void read_start(std::function<void(bool, remote::Pair)> read_completed) {
         read_completed_ = read_completed;
         StartRead(&pair_);
     }
@@ -65,11 +65,11 @@ private:
     std::unique_ptr<remote::KV::Stub> stub_;
     grpc::ClientContext context_;
     remote::Pair pair_;
-    std::function<void(bool,remote::Pair)> read_completed_;
+    std::function<void(bool, remote::Pair)> read_completed_;
     std::function<void(bool)> write_completed_;
     std::function<void(bool)> close_completed_;
 };
 
 } // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_GRPC_CLIENT_REACTOR_HPP_

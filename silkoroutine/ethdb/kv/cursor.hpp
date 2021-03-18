@@ -14,12 +14,13 @@
    limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_CURSOR_H_
-#define SILKOROUTINE_KV_CURSOR_H_
+#ifndef SILKOROUTINE_ETHDB_KV_CURSOR_HPP_
+#define SILKOROUTINE_ETHDB_KV_CURSOR_HPP_
 
 #include <silkoroutine/config.hpp>
 
 #include <memory>
+#include <string>
 
 #include <asio/awaitable.hpp>
 
@@ -36,11 +37,11 @@ public:
 
     virtual uint32_t cursor_id() const = 0;
 
-    virtual asio::awaitable<KeyValue> seek(const std::string& table_name, const Bytes& seek_key) = 0; // TODO: ByteView?
+    virtual asio::awaitable<KeyValue> seek(const std::string& table_name, const Bytes& seek_key) = 0; // TODO(canepat): ByteView?
 
     virtual asio::awaitable<void> open_cursor(const std::string& table_name) = 0;
 
-    virtual asio::awaitable<KeyValue> seek(const Bytes& seek_key) = 0; // TODO: ByteView?
+    virtual asio::awaitable<KeyValue> seek(const Bytes& seek_key) = 0; // TODO(canepat): ByteView?
 
     virtual asio::awaitable<KeyValue> next() = 0;
 
@@ -49,4 +50,4 @@ public:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif  // SILKOROUTINE_KV_CURSOR_H_
+#endif  // SILKOROUTINE_ETHDB_KV_CURSOR_HPP_

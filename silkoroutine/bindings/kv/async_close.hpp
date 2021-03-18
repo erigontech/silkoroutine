@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP
-#define SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP_
+#define SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP_
 
 #include <asio/detail/config.hpp>
 #include <asio/detail/bind_handler.hpp>
@@ -29,8 +29,7 @@
 namespace silkoroutine::bindings::kv {
 
 template <typename Handler, typename IoExecutor>
-class async_close : public async_operation<void, uint32_t>
-{
+class async_close : public async_operation<void, uint32_t> {
 public:
     ASIO_DEFINE_HANDLER_PTR(async_close);
 
@@ -38,7 +37,7 @@ public:
     : async_operation(&async_close::do_complete), handler_(ASIO_MOVE_CAST(Handler)(h)), work_(handler_, io_ex)
     {}
 
-    static void do_complete(void* owner, async_operation* base, uint32_t cursor_id=0) {
+    static void do_complete(void* owner, async_operation* base, uint32_t cursor_id = 0) {
         // Take ownership of the handler object.
         async_close* h{static_cast<async_close*>(base)};
         ptr p = {asio::detail::addressof(h->handler_), h, h};
@@ -46,9 +45,7 @@ public:
         ASIO_HANDLER_COMPLETION((*h));
 
         // Take ownership of the operation's outstanding work.
-        asio::detail::handler_work<Handler, IoExecutor> w(
-            ASIO_MOVE_CAST2(asio::detail::handler_work<Handler, IoExecutor>)(h->work_)
-        );
+        auto work{ASIO_MOVE_CAST2(asio::detail::handler_work<Handler, IoExecutor>)(h->work_)};
 
         // Make a copy of the handler so that the memory can be deallocated before
         // the upcall is made. Even if we're not about to make an upcall, a
@@ -64,7 +61,7 @@ public:
         if (owner) {
             asio::detail::fenced_block b(asio::detail::fenced_block::half);
             ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_));
-            w.complete(handler, handler.handler_);
+            work.complete(handler, handler.handler_);
             ASIO_HANDLER_INVOCATION_END;
         }
     }
@@ -76,4 +73,4 @@ private:
 
 } // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP_

@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_CURSOR_HPP_
-#define SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_CURSOR_HPP_
+#ifndef SILKOROUTINE_BINDINGS_P2PSENTRY_ASYNC_SET_STATUS_HPP_
+#define SILKOROUTINE_BINDINGS_P2PSENTRY_ASYNC_SET_STATUS_HPP_
 
 #include <asio/detail/config.hpp>
 #include <asio/detail/bind_handler.hpp>
@@ -25,21 +25,22 @@
 #include <asio/detail/memory.hpp>
 
 #include <silkoroutine/bindings/async_operation.hpp>
+#include <silkoroutine/bindings/p2psentry/generated/sentry.grpc.pb.h>
 
-namespace silkoroutine::bindings::kv {
+namespace silkoroutine::bindings::p2psentry {
 
 template <typename Handler, typename IoExecutor>
-class async_close_cursor : public async_operation<void, uint32_t> {
+class async_set_status : public async_operation<void, google::protobuf::Empty> {
 public:
-    ASIO_DEFINE_HANDLER_PTR(async_close_cursor);
+    ASIO_DEFINE_HANDLER_PTR(async_set_status);
 
-    async_close_cursor(Handler& h, const IoExecutor& io_ex)
-    : async_operation(&async_close_cursor::do_complete), handler_(ASIO_MOVE_CAST(Handler)(h)), work_(handler_, io_ex)
+    async_set_status(Handler& h, const IoExecutor& io_ex)
+    : async_operation(&async_set_status::do_complete), handler_(ASIO_MOVE_CAST(Handler)(h)), work_(handler_, io_ex)
     {}
 
-    static void do_complete(void* owner, async_operation* base, uint32_t cursor_id = 0) {
+    static void do_complete(void* owner, async_operation* base, google::protobuf::Empty response = {}) {
         // Take ownership of the handler object.
-        async_close_cursor* h{static_cast<async_close_cursor*>(base)};
+        async_set_status* h{static_cast<async_set_status*>(base)};
         ptr p = {asio::detail::addressof(h->handler_), h, h};
 
         ASIO_HANDLER_COMPLETION((*h));
@@ -53,7 +54,7 @@ public:
         // with the handler. Consequently, a local copy of the handler is required
         // to ensure that any owning sub-object remains valid until after we have
         // deallocated the memory here.
-        asio::detail::binder1<Handler, uint32_t> handler{h->handler_, cursor_id};
+        asio::detail::binder1<Handler, google::protobuf::Empty> handler{h->handler_, response};
         p.h = asio::detail::addressof(handler.handler_);
         p.reset();
 
@@ -71,6 +72,6 @@ private:
     asio::detail::handler_work<Handler, IoExecutor> work_;
 };
 
-} // namespace silkoroutine::bindings::kv
+} // namespace silkoroutine::bindings::p2psentry
 
-#endif // SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_CURSOR_HPP_
+#endif // SILKOROUTINE_BINDINGS_P2PSENTRY_ASYNC_SET_STATUS_HPP_

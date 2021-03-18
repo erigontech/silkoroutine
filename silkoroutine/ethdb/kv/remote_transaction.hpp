@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_REMOTE_TRANSACTION_HPP
-#define SILKOROUTINE_KV_REMOTE_TRANSACTION_HPP
+#ifndef SILKOROUTINE_ETHDB_KV_REMOTE_TRANSACTION_HPP_
+#define SILKOROUTINE_ETHDB_KV_REMOTE_TRANSACTION_HPP_
 
 #include <map>
 #include <memory>
@@ -55,4 +55,4 @@ private:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif // SILKOROUTINE_KV_REMOTE_TRANSACTION_HPP
+#endif // SILKOROUTINE_ETHDB_KV_REMOTE_TRANSACTION_HPP_

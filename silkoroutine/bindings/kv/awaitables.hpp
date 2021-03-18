@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP
-#define SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP_
+#define SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP_
 
 #include <silkoroutine/config.hpp>
 
@@ -23,6 +23,7 @@
 #include <string>
 #include <system_error>
 #include <thread>
+#include <utility>
 
 #include <asio/async_result.hpp>
 #include <asio/detail/non_const_lvalue.hpp>
@@ -316,4 +317,4 @@ struct GrpcAsioAwaitable {
 
 } // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP_

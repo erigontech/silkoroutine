@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_DATABASE_H_
-#define SILKOROUTINE_KV_DATABASE_H_
+#ifndef SILKOROUTINE_ETHDB_KV_DATABASE_HPP_
+#define SILKOROUTINE_ETHDB_KV_DATABASE_HPP_
 
 #include <memory>
 
@@ -36,4 +36,4 @@ public:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif  // SILKOROUTINE_KV_DATABASE_H_
+#endif  // SILKOROUTINE_ETHDB_KV_DATABASE_HPP_

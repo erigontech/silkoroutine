@@ -14,12 +14,13 @@
    limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_REMOTE_CURSOR_H_
-#define SILKOROUTINE_KV_REMOTE_CURSOR_H_
+#ifndef SILKOROUTINE_ETHDB_KV_REMOTE_CURSOR_HPP_
+#define SILKOROUTINE_ETHDB_KV_REMOTE_CURSOR_HPP_
 
 #include <silkoroutine/config.hpp>
 
 #include <memory>
+#include <string>
 
 #include <asio/awaitable.hpp>
 #include <asio/io_context.hpp>
@@ -35,7 +36,7 @@ namespace silkoroutine::ethdb::kv {
 
 class RemoteCursor : public Cursor {
 public:
-    RemoteCursor(bindings::kv::GrpcAsioAwaitable<asio::io_context::executor_type>& kv_awaitable)
+    explicit RemoteCursor(bindings::kv::GrpcAsioAwaitable<asio::io_context::executor_type>& kv_awaitable)
     : kv_awaitable_(kv_awaitable), cursor_id_{0} {}
 
     RemoteCursor(const RemoteCursor&) = delete;
@@ -96,4 +97,4 @@ private:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif  // SILKOROUTINE_KV_REMOTE_CURSOR_H_
+#endif  // SILKOROUTINE_ETHDB_KV_REMOTE_CURSOR_HPP_
