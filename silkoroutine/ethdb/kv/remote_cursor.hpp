@@ -28,7 +28,7 @@
 #include <silkoroutine/common/clock_time.hpp>
 #include <silkoroutine/common/log.hpp>
 #include <silkoroutine/common/util.hpp>
-#include <silkoroutine/ethdb/kv/awaitables.hpp>
+#include <silkoroutine/bindings/kv/awaitables.hpp>
 #include <silkoroutine/ethdb/kv/cursor.hpp>
 
 namespace silkoroutine::ethdb::kv {

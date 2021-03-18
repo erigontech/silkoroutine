@@ -22,7 +22,7 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include <silkoroutine/ethdb/kv/remote/kv.grpc.pb.h>
+#include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 namespace silkoroutine::ethdb::kv {
 
@@ -60,6 +60,7 @@ public:
     void OnDone(const ::grpc::Status& status) override {
         close_completed_(status.ok());
     }
+
 private:
     std::unique_ptr<remote::KV::Stub> stub_;
     grpc::ClientContext context_;

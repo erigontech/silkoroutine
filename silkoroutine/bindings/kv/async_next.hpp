@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_ASYNC_CLOSE_HPP
-#define SILKOROUTINE_KV_ASYNC_CLOSE_HPP
+#ifndef SILKOROUTINE_KV_ASYNC_NEXT_HPP
+#define SILKOROUTINE_KV_ASYNC_NEXT_HPP
 
 #include <asio/detail/config.hpp>
 #include <asio/detail/bind_handler.hpp>
@@ -24,23 +24,24 @@
 #include <asio/detail/handler_work.hpp>
 #include <asio/detail/memory.hpp>
 
-#include <silkoroutine/ethdb/kv/async_operation.hpp>
+#include <silkoroutine/bindings/async_operation.hpp>
+#include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 namespace silkoroutine::ethdb::kv {
 
 template <typename Handler, typename IoExecutor>
-class async_close : public async_operation<void, uint32_t>
+class async_next : public async_operation<void, remote::Pair>
 {
 public:
-    ASIO_DEFINE_HANDLER_PTR(async_close);
+    ASIO_DEFINE_HANDLER_PTR(async_next);
 
-    async_close(Handler& h, const IoExecutor& io_ex)
-    : async_operation(&async_close::do_complete), handler_(ASIO_MOVE_CAST(Handler)(h)), work_(handler_, io_ex)
+    async_next(Handler& h, const IoExecutor& io_ex)
+    : async_operation(&async_next::do_complete), handler_(ASIO_MOVE_CAST(Handler)(h)), work_(handler_, io_ex)
     {}
 
-    static void do_complete(void* owner, async_operation* base, uint32_t cursor_id=0) {
+    static void do_complete(void* owner, async_operation* base, remote::Pair next_pair={}) {
         // Take ownership of the handler object.
-        async_close* h{static_cast<async_close*>(base)};
+        async_next* h{static_cast<async_next*>(base)};
         ptr p = {asio::detail::addressof(h->handler_), h, h};
 
         ASIO_HANDLER_COMPLETION((*h));
@@ -56,7 +57,7 @@ public:
         // with the handler. Consequently, a local copy of the handler is required
         // to ensure that any owning sub-object remains valid until after we have
         // deallocated the memory here.
-        asio::detail::binder1<Handler, uint32_t> handler{h->handler_, cursor_id};
+        asio::detail::binder1<Handler, remote::Pair> handler{h->handler_, next_pair};
         p.h = asio::detail::addressof(handler.handler_);
         p.reset();
 
@@ -76,4 +77,4 @@ private:
 
 } // namespace silkoroutine::ethdb::kv
 
-#endif // SILKOROUTINE_KV_ASYNC_CLOSE_HPP
+#endif // SILKOROUTINE_KV_ASYNC_NEXT_HPP

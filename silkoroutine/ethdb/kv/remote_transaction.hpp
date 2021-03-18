@@ -25,11 +25,11 @@
 
 #include <asio/use_awaitable.hpp>
 
-#include <silkoroutine/ethdb/kv/awaitables.hpp>
+#include <silkoroutine/bindings/kv/awaitables.hpp>
+#include <silkoroutine/bindings/kv/client_callback_reactor.hpp>
 #include <silkoroutine/ethdb/kv/cursor.hpp>
 #include <silkoroutine/ethdb/kv/remote_cursor.hpp>
 #include <silkoroutine/ethdb/kv/transaction.hpp>
-#include <silkoroutine/ethdb/kv/client_callback_reactor.hpp>
 
 namespace silkoroutine::ethdb::kv {
 

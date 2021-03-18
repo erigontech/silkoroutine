@@ -24,7 +24,7 @@
 #include <asio/detail/handler_work.hpp>
 #include <asio/detail/memory.hpp>
 
-#include <silkoroutine/ethdb/kv/async_operation.hpp>
+#include <silkoroutine/bindings/async_operation.hpp>
 
 namespace silkoroutine::ethdb::kv {
 

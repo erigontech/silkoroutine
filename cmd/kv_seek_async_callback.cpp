@@ -28,7 +28,7 @@
 
 #include <silkoroutine/common/constants.hpp>
 #include <silkoroutine/common/util.hpp>
-#include <silkoroutine/ethdb/kv/remote/kv.grpc.pb.h>
+#include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 ABSL_FLAG(std::string, table, "", "database table name");
 ABSL_FLAG(std::string, seekkey, "", "seek key as hex string w/o leading 0x");

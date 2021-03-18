@@ -32,13 +32,13 @@
 #include <grpcpp/grpcpp.h>
 
 #include <silkoroutine/common/util.hpp>
-#include <silkoroutine/ethdb/kv/async_close_cursor.hpp>
-#include <silkoroutine/ethdb/kv/async_close.hpp>
-#include <silkoroutine/ethdb/kv/async_next.hpp>
-#include <silkoroutine/ethdb/kv/async_open_cursor.hpp>
-#include <silkoroutine/ethdb/kv/async_seek.hpp>
-#include <silkoroutine/ethdb/kv/client_callback_reactor.hpp>
-#include <silkoroutine/ethdb/kv/remote/kv.grpc.pb.h>
+#include <silkoroutine/bindings/kv/async_close_cursor.hpp>
+#include <silkoroutine/bindings/kv/async_close.hpp>
+#include <silkoroutine/bindings/kv/async_next.hpp>
+#include <silkoroutine/bindings/kv/async_open_cursor.hpp>
+#include <silkoroutine/bindings/kv/async_seek.hpp>
+#include <silkoroutine/bindings/kv/client_callback_reactor.hpp>
+#include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 namespace silkoroutine::ethdb::kv {
 

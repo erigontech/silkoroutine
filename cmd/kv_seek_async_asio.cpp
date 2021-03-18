@@ -26,7 +26,7 @@
 
 #include <silkoroutine/common/constants.hpp>
 #include <silkoroutine/common/util.hpp>
-#include <silkoroutine/ethdb/kv/remote/kv.grpc.pb.h>
+#include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
 int kv_seek_async(std::string table_name, std::string target, const silkoroutine::Bytes& seek_key_bytes, uint32_t timeout) {
     using namespace silkoroutine; // NOLINT(build/namespaces) [just for operator<<]
