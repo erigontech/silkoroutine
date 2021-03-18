@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_ASYNC_SEEK_HPP
-#define SILKOROUTINE_KV_ASYNC_SEEK_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_ASYNC_SEEK_HPP
+#define SILKOROUTINE_BINDINGS_KV_ASYNC_SEEK_HPP
 
 #include <asio/detail/config.hpp>
 #include <asio/detail/bind_handler.hpp>
@@ -27,7 +27,7 @@
 #include <silkoroutine/bindings/async_operation.hpp>
 #include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
-namespace silkoroutine::ethdb::kv {
+namespace silkoroutine::bindings::kv {
 
 template <typename Handler, typename IoExecutor>
 class async_seek : public async_operation<void, remote::Pair>
@@ -75,6 +75,6 @@ private:
     asio::detail::handler_work<Handler, IoExecutor> work_;
 };
 
-} // namespace silkoroutine::ethdb::kv
+} // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_KV_ASYNC_SEEK_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_ASYNC_SEEK_HPP

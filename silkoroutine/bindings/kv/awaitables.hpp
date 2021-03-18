@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_AWAITABLES_HPP
-#define SILKOROUTINE_KV_AWAITABLES_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP
+#define SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP
 
 #include <silkoroutine/config.hpp>
 
@@ -40,7 +40,7 @@
 #include <silkoroutine/bindings/kv/client_callback_reactor.hpp>
 #include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
-namespace silkoroutine::ethdb::kv {
+namespace silkoroutine::bindings::kv {
 
 template<typename Executor>
 struct KvAsioAwaitable;
@@ -60,7 +60,7 @@ public:
         ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
         asio::detail::non_const_lvalue<WaitHandler> handler2(handler);
-        typedef silkoroutine::ethdb::kv::async_open_cursor<WaitHandler, Executor> op;
+        typedef async_open_cursor<WaitHandler, Executor> op;
         typename op::ptr p = {asio::detail::addressof(handler2.value), op::ptr::allocate(handler2.value), 0};
         wrapper_ = new op(handler2.value, self_->context_.get_executor());
 
@@ -74,7 +74,7 @@ public:
             self_->reactor_.read_start([this](bool ok, remote::Pair open_pair) {
                 auto cursor_id = open_pair.cursorid();
 
-                typedef silkoroutine::ethdb::kv::async_open_cursor<WaitHandler, Executor> op;
+                typedef async_open_cursor<WaitHandler, Executor> op;
                 auto open_cursor_op = static_cast<op*>(wrapper_);
 
                 // Make the io_context thread execute the operation completion
@@ -109,7 +109,7 @@ public:
         ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
         asio::detail::non_const_lvalue<WaitHandler> handler2(handler);
-        typedef silkoroutine::ethdb::kv::async_seek<WaitHandler, Executor> op;
+        typedef async_seek<WaitHandler, Executor> op;
         typename op::ptr p = {asio::detail::addressof(handler2.value), op::ptr::allocate(handler2.value), 0};
         wrapper_ = new op(handler2.value, self_->context_.get_executor());
 
@@ -122,7 +122,7 @@ public:
                 throw std::system_error{std::make_error_code(std::errc::io_error), "write failed in SEEK"};
             }
             self_->reactor_.read_start([this](bool ok, remote::Pair seek_pair) {
-                typedef silkoroutine::ethdb::kv::async_seek<WaitHandler, Executor> op;
+                typedef async_seek<WaitHandler, Executor> op;
                 auto seek_op = static_cast<op*>(wrapper_);
 
                 // Make the io_context thread execute the operation completion
@@ -158,7 +158,7 @@ public:
         ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
         asio::detail::non_const_lvalue<WaitHandler> handler2(handler);
-        typedef silkoroutine::ethdb::kv::async_next<WaitHandler, Executor> op;
+        typedef async_next<WaitHandler, Executor> op;
         typename op::ptr p = {asio::detail::addressof(handler2.value), op::ptr::allocate(handler2.value), 0};
         wrapper_ = new op(handler2.value, self_->context_.get_executor());
 
@@ -170,7 +170,7 @@ public:
                 throw std::system_error{std::make_error_code(std::errc::io_error), "write failed in NEXT"};
             }
             self_->reactor_.read_start([this](bool ok, remote::Pair next_pair) {
-                typedef silkoroutine::ethdb::kv::async_next<WaitHandler, Executor> op;
+                typedef async_next<WaitHandler, Executor> op;
                 auto next_op = static_cast<op*>(wrapper_);
 
                 // Make the io_context thread execute the operation completion
@@ -206,7 +206,7 @@ public:
         ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
         asio::detail::non_const_lvalue<WaitHandler> handler2(handler);
-        typedef silkoroutine::ethdb::kv::async_close_cursor<WaitHandler, Executor> op;
+        typedef async_close_cursor<WaitHandler, Executor> op;
         typename op::ptr p = {asio::detail::addressof(handler2.value), op::ptr::allocate(handler2.value), 0};
         wrapper_ = new op(handler2.value, self_->context_.get_executor());
 
@@ -220,7 +220,7 @@ public:
             self_->reactor_.read_start([this](bool ok, remote::Pair close_pair) {
                 auto cursor_id = close_pair.cursorid();
 
-                typedef silkoroutine::ethdb::kv::async_close_cursor<WaitHandler, Executor> op;
+                typedef async_close_cursor<WaitHandler, Executor> op;
                 auto close_cursor_op = static_cast<op*>(wrapper_);
 
                 // Make the io_context thread execute the operation completion
@@ -255,12 +255,12 @@ public:
         ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
         asio::detail::non_const_lvalue<WaitHandler> handler2(handler);
-        typedef silkoroutine::ethdb::kv::async_close<WaitHandler, Executor> op;
+        typedef async_close<WaitHandler, Executor> op;
         typename op::ptr p = {asio::detail::addressof(handler2.value), op::ptr::allocate(handler2.value), 0};
         wrapper_ = new op(handler2.value, self_->context_.get_executor());
 
         self_->reactor_.close_start([this](bool ok) {
-            typedef silkoroutine::ethdb::kv::async_close<WaitHandler, Executor> op;
+            typedef async_close<WaitHandler, Executor> op;
             auto close_op = static_cast<op*>(wrapper_);
 
             // Make the io_context thread execute the operation completion
@@ -314,103 +314,6 @@ struct KvAsioAwaitable {
     ClientCallbackReactor& reactor_;
 };
 
-struct KvAwaitable {
-    KvAwaitable(asio::io_context& context, ClientCallbackReactor& reactor, uint32_t cursor_id = 0)
-    : context_(context), reactor_(reactor), cursor_id_(cursor_id) {}
+} // namespace silkoroutine::bindings::kv
 
-    bool await_ready() noexcept { return false; }
-
-protected:
-    asio::io_context& context_;
-    ClientCallbackReactor& reactor_;
-    uint32_t cursor_id_;
-};
-
-struct KvOpenCursorAwaitable : KvAwaitable {
-    KvOpenCursorAwaitable(asio::io_context& context, ClientCallbackReactor& reactor, const std::string& table_name)
-    : KvAwaitable{context, reactor}, table_name_(table_name) {}
-
-    auto await_suspend(std::coroutine_handle<void> handle) {
-        auto open_message = remote::Cursor{};
-        open_message.set_op(remote::Op::OPEN);
-        open_message.set_bucketname(table_name_);
-        reactor_.write_start(&open_message, [this, &handle](bool ok) {
-            if (!ok) {
-                throw std::system_error{std::make_error_code(std::errc::io_error), "write failed in OPEN cursor"};
-            }
-            reactor_.read_start([this, &handle](bool ok, remote::Pair open_pair) {
-                if (!ok) {
-                    throw std::system_error{std::make_error_code(std::errc::io_error), "read failed in OPEN cursor"};
-                }
-                cursor_id_ = open_pair.cursorid();
-                asio::post(context_, [&handle]() { handle.resume(); });
-            });
-        });
-    }
-
-    auto await_resume() noexcept { return cursor_id_; }
-
-private:
-    const std::string& table_name_;
-};
-
-struct KvSeekAwaitable : KvAwaitable {
-    KvSeekAwaitable(asio::io_context& context, ClientCallbackReactor& reactor, uint32_t cursor_id, const Bytes& seek_key_bytes)
-    : KvAwaitable{context, reactor, cursor_id}, seek_key_bytes_(std::move(seek_key_bytes)) {}
-
-    auto await_suspend(std::coroutine_handle<void> handle) {
-        auto seek_message = remote::Cursor{};
-        seek_message.set_op(remote::Op::SEEK);
-        seek_message.set_cursor(cursor_id_);
-        seek_message.set_k(seek_key_bytes_.c_str(), seek_key_bytes_.length());
-        reactor_.write_start(&seek_message, [this, &handle](bool ok) {
-            if (!ok) {
-                throw std::system_error{std::make_error_code(std::errc::io_error), "write failed in SEEK"};
-            }
-            reactor_.read_start([this, &handle](bool ok, remote::Pair seek_pair) {
-                if (!ok) {
-                    throw std::system_error{std::make_error_code(std::errc::io_error), "read failed in SEEK"};
-                }
-                const auto& key_bytes = byte_view_of_string(seek_pair.k());
-                const auto& value_bytes = byte_view_of_string(seek_pair.v());
-                value_bytes_ = std::move(value_bytes);
-                asio::post(context_, [&handle]() { handle.resume(); });
-            });
-        });
-    }
-
-    auto await_resume() noexcept { return value_bytes_; }
-
-private:
-    const Bytes seek_key_bytes_;
-    ByteView value_bytes_;
-};
-
-struct KvCloseCursorAwaitable : KvAwaitable {
-    KvCloseCursorAwaitable(asio::io_context& context, ClientCallbackReactor& reactor, uint32_t cursor_id)
-    : KvAwaitable{context, reactor, cursor_id} {}
-
-    auto await_suspend(std::coroutine_handle<void> handle) {
-        auto close_message = remote::Cursor{};
-        close_message.set_op(remote::Op::CLOSE);
-        close_message.set_cursor(cursor_id_);
-        reactor_.write_start(&close_message, [this, &handle](bool ok) {
-            if (!ok) {
-                throw std::system_error{std::make_error_code(std::errc::io_error), "write failed in CLOSE cursor"};
-            }
-            reactor_.read_start([this, &handle](bool ok, remote::Pair close_pair) {
-                if (!ok) {
-                    throw std::system_error{std::make_error_code(std::errc::io_error), "read failed in CLOSE cursor"};
-                }
-                cursor_id_ = close_pair.cursorid();
-                asio::post(context_, [&handle]() { handle.resume(); });
-            });
-        });
-    }
-
-    auto await_resume() noexcept { return cursor_id_; }
-};
-
-} // namespace silkoroutine::ethdb::kv
-
-#endif // SILKOROUTINE_KV_AWAITABLES_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_AWAITABLES_HPP

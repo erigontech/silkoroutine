@@ -14,17 +14,16 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_ASYNC_OPERATION_HPP
-#define SILKOROUTINE_KV_ASYNC_OPERATION_HPP
+#ifndef SILKOROUTINE_BINDINGS_ASYNC_OPERATION_HPP_
+#define SILKOROUTINE_BINDINGS_ASYNC_OPERATION_HPP_
 
 #include <asio/detail/handler_tracking.hpp>
 
-namespace silkoroutine::ethdb::kv {
+namespace silkoroutine::bindings {
 
 // Base class for gRPC async operations using Asio completion tokens.
 template<typename R, typename... Args>
-class async_operation ASIO_INHERIT_TRACKED_HANDLER
-{
+class async_operation ASIO_INHERIT_TRACKED_HANDLER {
 public:
     typedef async_operation operation_type;
 
@@ -48,6 +47,6 @@ private:
     func_type func_;
 };
 
-} // namespace silkoroutine::ethdb::kv
+} // namespace silkoroutine::bindings
 
-#endif // SILKOROUTINE_KV_ASYNC_OPERATION_HPP
+#endif // SILKOROUTINE_BINDINGS_ASYNC_OPERATION_HPP_

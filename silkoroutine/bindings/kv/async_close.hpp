@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_ASYNC_CLOSE_HPP
-#define SILKOROUTINE_KV_ASYNC_CLOSE_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP
+#define SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP
 
 #include <asio/detail/config.hpp>
 #include <asio/detail/bind_handler.hpp>
@@ -26,7 +26,7 @@
 
 #include <silkoroutine/bindings/async_operation.hpp>
 
-namespace silkoroutine::ethdb::kv {
+namespace silkoroutine::bindings::kv {
 
 template <typename Handler, typename IoExecutor>
 class async_close : public async_operation<void, uint32_t>
@@ -74,6 +74,6 @@ private:
     asio::detail::handler_work<Handler, IoExecutor> work_;
 };
 
-} // namespace silkoroutine::ethdb::kv
+} // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_KV_ASYNC_CLOSE_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_ASYNC_CLOSE_HPP

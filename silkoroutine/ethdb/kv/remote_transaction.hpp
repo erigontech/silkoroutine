@@ -48,8 +48,8 @@ public:
 
 private:
     asio::io_context& context_;
-    ClientCallbackReactor reactor_;
-    KvAsioAwaitable<asio::io_context::executor_type> kv_awaitable_;
+    bindings::kv::ClientCallbackReactor reactor_;
+    bindings::kv::KvAsioAwaitable<asio::io_context::executor_type> kv_awaitable_;
     std::map<std::string, std::shared_ptr<Cursor>> cursors_;
 };
 

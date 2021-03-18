@@ -14,8 +14,8 @@
     limitations under the License.
 */
 
-#ifndef SILKOROUTINE_KV_CLIENT_CALLBACK_REACTOR_HPP
-#define SILKOROUTINE_KV_CLIENT_CALLBACK_REACTOR_HPP
+#ifndef SILKOROUTINE_BINDINGS_KV_CLIENT_CALLBACK_REACTOR_HPP
+#define SILKOROUTINE_BINDINGS_KV_CLIENT_CALLBACK_REACTOR_HPP
 
 #include <functional>
 #include <memory>
@@ -24,7 +24,7 @@
 
 #include <silkoroutine/bindings/kv/generated/kv.grpc.pb.h>
 
-namespace silkoroutine::ethdb::kv {
+namespace silkoroutine::bindings::kv {
 
 class ClientCallbackReactor final : public grpc::experimental::ClientBidiReactor<remote::Cursor, remote::Pair> {
 public:
@@ -70,6 +70,6 @@ private:
     std::function<void(bool)> close_completed_;
 };
 
-} // namespace silkoroutine::ethdb::kv
+} // namespace silkoroutine::bindings::kv
 
-#endif // SILKOROUTINE_KV_CLIENT_CALLBACK_REACTOR_HPP
+#endif // SILKOROUTINE_BINDINGS_KV_CLIENT_CALLBACK_REACTOR_HPP
